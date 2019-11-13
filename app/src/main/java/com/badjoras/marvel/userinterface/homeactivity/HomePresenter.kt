@@ -4,6 +4,7 @@ import com.badjoras.marvel.abstraction.BasePresenter
 import com.badjoras.marvel.dependencyinjection.modules.SchedulerModule
 import com.badjoras.marvel.models.ComicsResponse
 import com.badjoras.marvel.services.MarvelServices
+import com.badjoras.marvel.userinterface.homeactivity.recycler.PaginationInfoModel
 import io.reactivex.Scheduler
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,6 +23,25 @@ class HomePresenter(
         super.onResume()
         getComics()
         handleImageSelected()
+        handleRecyclerPaginationEvent()
+    }
+
+    private fun handleRecyclerPaginationEvent() {
+        addOnResumeSubscription(view.setupLoadMoreItemsEvent()
+            .observeOn(viewScheduler)
+            .subscribe(
+                {paginationInfo -> loadMorePages(paginationInfo)},
+                { error -> Timber.e(error) }
+            ))
+    }
+
+    private fun loadMorePages(paginationInfo: PaginationInfoModel) {
+        addOnResumeSubscription(service.getComicsList(paginationInfo!!.currentAdapterComicListSize)
+            .observeOn(viewScheduler)
+            .subscribe(
+                { response -> handleComicsPagedResponseSuccess(response) },
+                { error -> handleComicsResponseError(error) }
+            ))
     }
 
     private fun handleImageSelected() {
@@ -49,6 +69,12 @@ class HomePresenter(
     private fun handleComicsResponseSuccess(response: ComicsResponse?) {
         if (response != null) {
             view.prepareRecyclerData(response.data.results)
+        }
+    }
+
+    private fun handleComicsPagedResponseSuccess(response: ComicsResponse?) {
+        if (response != null) {
+            view.addMorePagesToRecycler(response.data.results)
         }
     }
 }

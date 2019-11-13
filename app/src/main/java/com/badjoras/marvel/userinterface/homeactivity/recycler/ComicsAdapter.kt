@@ -37,7 +37,7 @@ class ComicsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return comicsList.size+1
+        return getComicListSize()+1
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -58,10 +58,19 @@ class ComicsAdapter(
         }
     }
 
+    fun getComicListSize():Int = comicsList.size
+
     fun setupData(results: List<Results>) {
         comicsList = arrayListOf()
         comicsList.addAll(results)
         notifyDataSetChanged()
+    }
+
+    fun addPages(results: List<Results>) {
+        val prevSize = getComicListSize()
+        comicsList.addAll(results)
+        notifyItemChanged(prevSize)
+        notifyItemRangeInserted(prevSize+1, comicsList.size+1)
     }
 
     companion object {

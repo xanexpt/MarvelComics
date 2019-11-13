@@ -21,6 +21,7 @@ class AuthenticationInterceptor : Interceptor {
             .addQueryParameter(QUERY_PARAMETER_TIME_STAMP, timeStamp)
             .addQueryParameter(QUERY_PARAMETER_API_KEY, publicKey)
             .addQueryParameter(QUERY_PARAMETER_HASH, getHashMd5(timeStamp, publicKey, privateKey))
+            .addQueryParameter(QUERY_PARAMETER_LIMIT, REQUEST_ITEM_SIZE.toString())
             .build()
 
         request = request.newBuilder().url(url!!).build()
@@ -42,5 +43,7 @@ class AuthenticationInterceptor : Interceptor {
         const val QUERY_PARAMETER_TIME_STAMP = "ts"
         const val QUERY_PARAMETER_API_KEY = "apikey"
         const val QUERY_PARAMETER_HASH = "hash"
+        const val QUERY_PARAMETER_LIMIT = "limit"
+        const val REQUEST_ITEM_SIZE = 20
     }
 }

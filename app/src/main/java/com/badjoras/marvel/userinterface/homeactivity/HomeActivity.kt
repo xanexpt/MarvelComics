@@ -21,6 +21,8 @@ import com.badjoras.marvel.models.HomeImageModelHelper
 import com.badjoras.marvel.models.Results
 import com.badjoras.marvel.services.MarvelServices
 import com.badjoras.marvel.userinterface.homeactivity.recycler.ComicsAdapter
+import com.badjoras.marvel.userinterface.homeactivity.recycler.PaginationInfoModel
+import com.badjoras.marvel.userinterface.homeactivity.recycler.PaginationScrollListener
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -32,16 +34,11 @@ class HomeActivity : BaseActivity(), HomeContract.View {
     private var gridLayoutManager: GridLayoutManager? = null
     private var comicsAdapter: ComicsAdapter? = null
 
-    // Hold a reference to the current animator,
-    // so that it can be canceled mid-way.
     private var currentAnimator: Animator? = null
-
-    // The system "short" animation time duration, in milliseconds. This
-    // duration is ideal for subtle animations or animations that occur
-    // very frequently.
-    private var shortAnimationDuration: Int = 500
+    private var shortAnimationDurationMilliseconds: Int = 500
 
     private lateinit var comicImageSelected: Subject<HomeImageModelHelper>
+    private lateinit var loadMoreItemsSubject: Subject<PaginationInfoModel>
 
     override fun getPresenter(): UiContract.Presenter? {
         val mainInjector = (application as BaseApplication).applicationComponent!!
@@ -59,7 +56,28 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         super.onCreate(savedInstanceState)
         setContentView(LAYOUT)
         comicImageSelected = PublishSubject.create()
+        loadMoreItemsSubject = PublishSubject.create()
         prepareRecyclerView()
+    }
+
+    var isLastPage: Boolean = false
+    var isLoading: Boolean = false
+
+    private fun prepareRecyclerPaginationListener() {
+        homeGridRecycler?.addOnScrollListener(object : PaginationScrollListener(gridLayoutManager!!) {
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+
+            override fun loadMoreItems() {
+                isLoading = true
+                loadMoreItemsSubject.onNext(PaginationInfoModel(comicsAdapter!!.getComicListSize()))
+            }
+        })
     }
 
     private fun prepareRecyclerView() {
@@ -72,9 +90,20 @@ class HomeActivity : BaseActivity(), HomeContract.View {
 
     override fun prepareRecyclerData(results: List<Results>) {
         if (comicsAdapter != null) {
+            isLoading = false
             comicsAdapter?.setupData(results)
+            prepareRecyclerPaginationListener()
         }
     }
+
+    override fun addMorePagesToRecycler(results: List<Results>) {
+        if (comicsAdapter != null) {
+            isLoading = false
+            comicsAdapter?.addPages(results)
+        }
+    }
+
+    override fun setupLoadMoreItemsEvent(): Observable<PaginationInfoModel> = loadMoreItemsSubject
 
     override fun setupImageSelected(): Observable<HomeImageModelHelper> = comicImageSelected
         .doOnNext { modelSelected -> zoomImageFromThumb(modelSelected.imgView, modelSelected.url) }
@@ -155,7 +184,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
                 with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X, startScale, 1f))
                 with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_Y, startScale, 1f))
             }
-            duration = shortAnimationDuration.toLong()
+            duration = shortAnimationDurationMilliseconds.toLong()
             interpolator = DecelerateInterpolator()
             addListener(object : AnimatorListenerAdapter() {
 
@@ -184,7 +213,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
                     with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X, startScale))
                     with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_Y, startScale))
                 }
-                duration = shortAnimationDuration.toLong()
+                duration = shortAnimationDurationMilliseconds.toLong()
                 interpolator = DecelerateInterpolator()
                 addListener(object : AnimatorListenerAdapter() {
 
