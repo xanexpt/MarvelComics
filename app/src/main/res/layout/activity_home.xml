@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/homeGridRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/expandedImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blackT"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
+        fresco:failureImage="@drawable/marvel_logo"
+        fresco:placeholderImageScaleType="center" />
+</FrameLayout>
