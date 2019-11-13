@@ -3,6 +3,7 @@ package com.badjoras.marvel.userinterface.comicdetaisactivity
 import android.os.Bundle
 import com.badjoras.marvel.abstraction.BasePresenter
 import com.badjoras.marvel.models.Results
+import com.badjoras.marvel.models.Thumbnail
 import com.badjoras.marvel.services.MarvelServices
 import com.google.gson.Gson
 
@@ -35,10 +36,31 @@ class ComicDetailsPresenter(
     }
 
     private fun prepareScreenIfNeeded() {
-        putComicTitle(comicDetails!!.title)
+        prepareImageView(comicDetails)
+        prepareComicTitle(comicDetails!!.title)
+        prepareComicDescription(comicDetails!!.description)
     }
 
-    private fun putComicTitle(title: String) {
+    private fun prepareImageView(comicData: Results?) {
+        if (hasValidThumbnail(comicData!!.thumbnail)) {
+            view.setImageURI(getThumbnailUrl(comicData.thumbnail))
+        }
+    }
+
+    private fun prepareComicDescription(description: String) {
+        view.updateDescription(description)
+    }
+
+    private fun prepareComicTitle(title: String) {
         view.updateComicName(title)
+    }
+
+    private fun getThumbnailUrl(thumbnail: Thumbnail?): String {
+        return thumbnail!!.path + "." + thumbnail.extension
+    }
+
+    private fun hasValidThumbnail(thumbnail: Thumbnail?): Boolean {
+        return (thumbnail != null && !thumbnail.extension.isNullOrEmpty()
+                && !thumbnail.path.isNullOrEmpty())
     }
 }

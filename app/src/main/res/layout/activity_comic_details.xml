@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/comicDetailsLogo"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/blackT"
+        android:scaleType="centerCrop"
+        fresco:failureImage="@drawable/marvel_logo"
+        fresco:placeholderImageScaleType="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/detailsName"/>
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/detailsName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/caviar_dreams_bold"
+            android:textSize="20sp"
+            android:layout_marginBottom="4dp"
+            tools:text="Titulo"/>
+
+        <TextView
+            android:id="@+id/detailsDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/caviar_dreams_regular"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"
+            tools:text="Description description description description description description description"/>
+
+    </LinearLayout>
 
 </LinearLayout>

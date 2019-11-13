@@ -67,7 +67,8 @@ class HomeActivity : BaseActivity(), HomeContract.View {
     var isLoading: Boolean = false
 
     private fun prepareRecyclerPaginationListener() {
-        homeGridRecycler?.addOnScrollListener(object : PaginationScrollListener(gridLayoutManager!!) {
+        homeGridRecycler?.addOnScrollListener(object :
+            PaginationScrollListener(gridLayoutManager!!) {
             override fun isLastPage(): Boolean {
                 return isLastPage
             }
@@ -179,13 +180,22 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         // Construct and run the parallel animation of the four translation and
         // scale properties (X, Y, SCALE_X, and SCALE_Y).
         currentAnimator = AnimatorSet().apply {
-            play(ObjectAnimator.ofFloat(
-                expandedImageView,
-                View.X,
-                startBounds.left,
-                finalBounds.left)
+            play(
+                ObjectAnimator.ofFloat(
+                    expandedImageView,
+                    View.X,
+                    startBounds.left,
+                    finalBounds.left
+                )
             ).apply {
-                with(ObjectAnimator.ofFloat(expandedImageView, View.Y, startBounds.top, finalBounds.top))
+                with(
+                    ObjectAnimator.ofFloat(
+                        expandedImageView,
+                        View.Y,
+                        startBounds.top,
+                        finalBounds.top
+                    )
+                )
                 with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X, startScale, 1f))
                 with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_Y, startScale, 1f))
             }
@@ -236,6 +246,14 @@ class HomeActivity : BaseActivity(), HomeContract.View {
                 })
                 start()
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (expandedImageView.visibility == View.VISIBLE) {
+            expandedImageView.performClick()
+        } else {
+            super.onBackPressed()
         }
     }
 

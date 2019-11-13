@@ -2,6 +2,7 @@ package com.badjoras.marvel.userinterface.comicdetaisactivity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.badjoras.marvel.BaseApplication
 import com.badjoras.marvel.R
@@ -41,7 +42,23 @@ class ComicDetailsActivity : BaseActivity(), ComicDetailsContract.View {
     }
 
     override fun updateComicName(title: String) {
-        detailsName.text = title
+        if (title.isEmpty()) {
+            detailsName.visibility = View.GONE
+        } else {
+            detailsName.text = title
+        }
+    }
+
+    override fun updateDescription(description: String) {
+        if (description.isEmpty()) {
+            detailsDescription.visibility = View.GONE
+        } else {
+            detailsDescription.text = description
+        }
+    }
+
+    override fun setImageURI(thumbnailUrl: String) {
+        comicDetailsLogo.setImageURI(thumbnailUrl)
     }
 
     companion object {
