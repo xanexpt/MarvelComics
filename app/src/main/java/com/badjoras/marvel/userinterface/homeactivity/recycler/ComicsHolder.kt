@@ -15,11 +15,13 @@ import timber.log.Timber
 
 class ComicsHolder(
     override val containerView: View,
-    private val comicImageSelected: Subject<HomeImageModelHelper>
+    private val comicImageSelected: Subject<HomeImageModelHelper>,
+    private val comicDetailsSelected: Subject<Results>
 ) :
     RecyclerView.ViewHolder(containerView), LayoutContainer {
 
     private var subscriptionImage: Disposable? = null
+    private var subscriptionDetails: Disposable? = null
 
     fun onBind(comicData: Results) {
         holderTitle.text = comicData.title
@@ -32,6 +34,11 @@ class ComicsHolder(
         subscriptionImage = RxView.clicks(holderImage)
             .subscribe(
                 { comicImageSelected.onNext(HomeImageModelHelper(getThumbnailUrl(comicData.thumbnail), holderImage)) },
+                { error -> Timber.e(error) }
+            )
+        subscriptionDetails = RxView.clicks(holderDetails)
+            .subscribe(
+                { comicDetailsSelected.onNext(comicData) },
                 { error -> Timber.e(error) }
             )
     }
@@ -48,6 +55,9 @@ class ComicsHolder(
     private fun clearSubscriptions() {
         if (subscriptionImage != null && !subscriptionImage!!.isDisposed) {
             subscriptionImage!!.dispose()
+        }
+        if (subscriptionDetails != null && !subscriptionDetails!!.isDisposed) {
+            subscriptionDetails!!.dispose()
         }
     }
 

@@ -11,9 +11,12 @@ class HomeContract {
         fun prepareRecyclerData(results: List<Results>)
         fun setupImageSelected(): Observable<HomeImageModelHelper>
         fun setupLoadMoreItemsEvent(): Observable<PaginationInfoModel>
+        fun setupDetailsSelected(): Observable<Results>
         fun addMorePagesToRecycler(results: List<Results>)
     }
 
     interface Presenter : UiContract.Presenter
-    interface Navigator
+    interface Navigator {
+        fun openComicDetails(comicDetails:Results)
+    }
 }

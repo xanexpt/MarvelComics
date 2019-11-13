@@ -26,6 +26,10 @@
         <activity
             android:name=".userinterface.homeactivity.HomeActivity"
             android:launchMode="singleTask"/>
+
+        <activity
+            android:name=".userinterface.comicdetaisactivity.ComicDetailsActivity"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

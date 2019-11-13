@@ -4,6 +4,7 @@ import com.badjoras.marvel.BaseApplication
 import com.badjoras.marvel.dependencyinjection.modules.*
 import com.badjoras.marvel.dependencyinjection.scope.ApplicationScope
 import com.badjoras.marvel.services.MarvelServices
+import com.badjoras.marvel.userinterface.comicdetaisactivity.ComicDetailsPresenter
 import com.badjoras.marvel.userinterface.homeactivity.HomePresenter
 import com.badjoras.marvel.userinterface.splashactivity.SplashPresenter
 import dagger.Component
@@ -17,6 +18,7 @@ interface MainInjectorComponent {
 
     fun inject(presenter: SplashPresenter)
     fun inject(presenter: HomePresenter)
+    fun inject(presenter: ComicDetailsPresenter)
 
     fun inject(service: MarvelServices)
 }

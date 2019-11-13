@@ -27,7 +27,6 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.activity_home.*
-import timber.log.Timber
 
 class HomeActivity : BaseActivity(), HomeContract.View {
 
@@ -38,6 +37,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
     private var shortAnimationDurationMilliseconds: Int = 500
 
     private lateinit var comicImageSelected: Subject<HomeImageModelHelper>
+    private lateinit var comicDetailsSelected: Subject<Results>
     private lateinit var loadMoreItemsSubject: Subject<PaginationInfoModel>
 
     override fun getPresenter(): UiContract.Presenter? {
@@ -46,7 +46,9 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         val service = MarvelServices()
         mainInjector.inject(service)
 
-        val presenter = HomePresenter(this, service)
+        val navigator = HomeNavigator(this)
+
+        val presenter = HomePresenter(this, service, navigator)
         mainInjector.inject(presenter)
 
         return presenter
@@ -56,6 +58,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         super.onCreate(savedInstanceState)
         setContentView(LAYOUT)
         comicImageSelected = PublishSubject.create()
+        comicDetailsSelected = PublishSubject.create()
         loadMoreItemsSubject = PublishSubject.create()
         prepareRecyclerView()
     }
@@ -84,7 +87,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         gridLayoutManager = GridLayoutManager(this, 2)
         homeGridRecycler.layoutManager = gridLayoutManager
 
-        comicsAdapter = ComicsAdapter(comicImageSelected)
+        comicsAdapter = ComicsAdapter(comicImageSelected, comicDetailsSelected)
         homeGridRecycler.adapter = comicsAdapter
     }
 
@@ -104,6 +107,8 @@ class HomeActivity : BaseActivity(), HomeContract.View {
     }
 
     override fun setupLoadMoreItemsEvent(): Observable<PaginationInfoModel> = loadMoreItemsSubject
+
+    override fun setupDetailsSelected(): Observable<Results> = comicDetailsSelected
 
     override fun setupImageSelected(): Observable<HomeImageModelHelper> = comicImageSelected
         .doOnNext { modelSelected -> zoomImageFromThumb(modelSelected.imgView, modelSelected.url) }

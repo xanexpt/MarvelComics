@@ -12,7 +12,8 @@ import javax.inject.Named
 
 class HomePresenter(
     private var view: HomeContract.View,
-    private var service: MarvelServices
+    private var service: MarvelServices,
+    private var navigator: HomeNavigator
 ) : BasePresenter(), HomeContract.Presenter {
 
     @Inject
@@ -23,14 +24,24 @@ class HomePresenter(
         super.onResume()
         getComics()
         handleImageSelected()
+        handleDetailsSelected()
         handleRecyclerPaginationEvent()
+    }
+
+    private fun handleDetailsSelected() {
+        addOnResumeSubscription(view.setupDetailsSelected()
+            .observeOn(viewScheduler)
+            .subscribe(
+                { comicDetails -> navigator.openComicDetails(comicDetails) },
+                { error -> Timber.e(error) }
+            ))
     }
 
     private fun handleRecyclerPaginationEvent() {
         addOnResumeSubscription(view.setupLoadMoreItemsEvent()
             .observeOn(viewScheduler)
             .subscribe(
-                {paginationInfo -> loadMorePages(paginationInfo)},
+                { paginationInfo -> loadMorePages(paginationInfo) },
                 { error -> Timber.e(error) }
             ))
     }

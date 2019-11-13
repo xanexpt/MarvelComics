@@ -9,7 +9,8 @@ import io.reactivex.subjects.Subject
 import timber.log.Timber
 
 class ComicsAdapter(
-    private var comicImageSelected: Subject<HomeImageModelHelper>
+    private var comicImageSelected: Subject<HomeImageModelHelper>,
+    private val comicDetailsSelected: Subject<Results>
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -20,7 +21,7 @@ class ComicsAdapter(
             VIEW_TYPE_NORMAL -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(ComicsHolder.LAYOUT, parent, false)
-                ComicsHolder(view, comicImageSelected)
+                ComicsHolder(view, comicImageSelected, comicDetailsSelected)
             }
             VIEW_TYPE_LOADING -> {
                 val view = LayoutInflater.from(parent.context)
