@@ -15,6 +15,7 @@
         android:id="@+id/holderImage"
         android:layout_width="match_parent"
         android:layout_height="220dp"
+        android:maxWidth="120dp"
         android:background="@color/blackT"
         android:scaleType="centerCrop"
         fresco:failureImage="@drawable/marvel_logo"
