@@ -24,6 +24,6 @@ class MarvelServices {
     }
 
     companion object {
-        const val ORDER_RECENT = "focDate"
+        const val ORDER_RECENT = "-focDate"
     }
 }
