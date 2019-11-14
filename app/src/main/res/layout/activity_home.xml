@@ -1,24 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
+    android:id="@+id/homeFlipper"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homeGridRecycler"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit" />
+        android:orientation="vertical">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/expandedImageView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homeGridRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="auto_fit" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/expandedImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/blackT"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            fresco:failureImage="@drawable/marvel_logo"
+            fresco:placeholderImageScaleType="center" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/splashTapToRetry"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/blackT"
-        android:scaleType="centerCrop"
-        android:visibility="invisible"
-        fresco:failureImage="@drawable/marvel_logo"
-        fresco:placeholderImageScaleType="center" />
-</FrameLayout>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:fontFamily="@font/caviar_dreams_bold"
+            android:gravity="center"
+            android:layout_margin="16dp"
+            android:layout_centerInParent="true"
+            android:text="@string/splash_error"/>
+
+    </RelativeLayout>
+</ViewFlipper>

@@ -13,6 +13,9 @@ class HomeContract {
         fun setupLoadMoreItemsEvent(): Observable<PaginationInfoModel>
         fun setupDetailsSelected(): Observable<Results>
         fun addMorePagesToRecycler(results: List<Results>)
+        fun showGetComicsError()
+        fun showLoading()
+        fun setupTapToRetry(): Observable<Any>
     }
 
     interface Presenter : UiContract.Presenter

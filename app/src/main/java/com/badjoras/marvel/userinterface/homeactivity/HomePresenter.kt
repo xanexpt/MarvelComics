@@ -26,6 +26,7 @@ class HomePresenter(
         handleImageSelected()
         handleDetailsSelected()
         handleRecyclerPaginationEvent()
+        handleTapToRetry()
     }
 
     private fun handleDetailsSelected() {
@@ -65,6 +66,7 @@ class HomePresenter(
     }
 
     private fun getComics() {
+        view.showLoading()
         addOnResumeSubscription(service.getComicsList(0)
             .observeOn(viewScheduler)
             .subscribe(
@@ -75,6 +77,7 @@ class HomePresenter(
 
     private fun handleComicsResponseError(error: Throwable?) {
         Timber.e(error)
+        view.showGetComicsError()
     }
 
     private fun handleComicsResponseSuccess(response: ComicsResponse?) {
@@ -87,5 +90,16 @@ class HomePresenter(
         if (response != null) {
             view.addMorePagesToRecycler(response.data.results)
         }
+    }
+
+    private fun handleTapToRetry() {
+        addOnResumeSubscription(
+            view.setupTapToRetry()
+                .observeOn(viewScheduler)
+                .subscribe(
+                    { getComics() },
+                    { error -> handleComicsResponseError(error) }
+                )
+        )
     }
 }

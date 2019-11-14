@@ -23,10 +23,12 @@ import com.badjoras.marvel.services.MarvelServices
 import com.badjoras.marvel.userinterface.homeactivity.recycler.ComicsAdapter
 import com.badjoras.marvel.userinterface.homeactivity.recycler.PaginationInfoModel
 import com.badjoras.marvel.userinterface.homeactivity.recycler.PaginationScrollListener
+import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.activity_home.*
+import java.util.concurrent.TimeUnit
 
 class HomeActivity : BaseActivity(), HomeContract.View {
 
@@ -257,11 +259,28 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         }
     }
 
+    override fun showGetComicsError() {
+        homeFlipper.displayedChild = VIEW_FLIPPER_ERROR
+    }
+
+    override fun showLoading() {
+        homeFlipper.displayedChild = VIEW_FLIPPER_LOADING
+    }
+
+    override fun setupTapToRetry(): Observable<Any> {
+        return RxView.clicks(splashTapToRetry)
+            .throttleFirst(CLICK_THROTTLE_DURATION_IN_MILLIS, TimeUnit.MILLISECONDS)
+    }
+
     companion object {
         fun getNavigationIntent(parentActivity: AppCompatActivity): Intent {
             return Intent(parentActivity, HomeActivity::class.java)
         }
 
         const val LAYOUT = R.layout.activity_home
+        private const val CLICK_THROTTLE_DURATION_IN_MILLIS = 500L
+
+        const val VIEW_FLIPPER_LOADING = 0
+        const val VIEW_FLIPPER_ERROR = 1
     }
 }

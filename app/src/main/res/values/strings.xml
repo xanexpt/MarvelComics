@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Marvel</string>
     <string name="open_details">Open Details</string>
+    <string name="splash_error">Problems accessing data, tap screen to retry.</string>
 </resources>
