@@ -85,7 +85,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
     }
 
     private fun prepareRecyclerView() {
-        gridLayoutManager = GridLayoutManager(this, 2)
+        gridLayoutManager = GridLayoutManager(this, resources.getInteger(R.integer.grid_horizontal_count))
         homeGridRecycler.layoutManager = gridLayoutManager
 
         comicsAdapter = ComicsAdapter(comicImageSelected, comicDetailsSelected)

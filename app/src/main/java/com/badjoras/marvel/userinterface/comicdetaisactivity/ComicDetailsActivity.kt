@@ -11,7 +11,10 @@ import com.badjoras.marvel.abstraction.UiContract
 import com.badjoras.marvel.models.Results
 import com.badjoras.marvel.services.MarvelServices
 import com.google.gson.Gson
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_comic_details.*
+import java.util.concurrent.TimeUnit
 
 class ComicDetailsActivity : BaseActivity(), ComicDetailsContract.View {
 
@@ -59,6 +62,11 @@ class ComicDetailsActivity : BaseActivity(), ComicDetailsContract.View {
 
     override fun setImageURI(thumbnailUrl: String) {
         comicDetailsLogo.setImageURI(thumbnailUrl)
+    }
+
+    override fun setupCloseSelected(): Observable<Any> {
+        return RxView.clicks(closeDetails)
+            .throttleFirst(CLICK_THROTTLE_DURATION_IN_MILLIS, TimeUnit.MILLISECONDS)
     }
 
     companion object {

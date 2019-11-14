@@ -8,6 +8,8 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 class AuthenticationInterceptor : Interceptor {
+
+    //TODO store keys in a secure way
     override fun intercept(chain: Interceptor.Chain): Response {
         val timeStamp: String = System.currentTimeMillis().toString()
         val publicKey: String = "0dd146f8b09f070321a176f212b235a0"

@@ -2,16 +2,25 @@ package com.badjoras.marvel.userinterface.comicdetaisactivity
 
 import android.os.Bundle
 import com.badjoras.marvel.abstraction.BasePresenter
+import com.badjoras.marvel.dependencyinjection.modules.SchedulerModule
 import com.badjoras.marvel.models.Results
 import com.badjoras.marvel.models.Thumbnail
 import com.badjoras.marvel.services.MarvelServices
 import com.google.gson.Gson
+import io.reactivex.Scheduler
+import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Named
 
 class ComicDetailsPresenter(
     private var view: ComicDetailsContract.View,
     private var navigator: ComicDetailsContract.Navigator,
     private var service: MarvelServices
 ) : BasePresenter(), ComicDetailsContract.Presenter {
+
+    @Inject
+    @field:Named(SchedulerModule.VIEW_SCHEDULER)
+    internal lateinit var viewScheduler: Scheduler
 
     private var comicDetails: Results?=null
     val gson = Gson()
@@ -33,6 +42,7 @@ class ComicDetailsPresenter(
     override fun onResume() {
         super.onResume()
         prepareScreenIfNeeded()
+        handleCloseSelected()
     }
 
     private fun prepareScreenIfNeeded() {
@@ -62,5 +72,16 @@ class ComicDetailsPresenter(
     private fun hasValidThumbnail(thumbnail: Thumbnail?): Boolean {
         return (thumbnail != null && !thumbnail.extension.isNullOrEmpty()
                 && !thumbnail.path.isNullOrEmpty())
+    }
+
+    private fun handleCloseSelected() {
+        addOnResumeSubscription(view.setupCloseSelected()
+            .observeOn(viewScheduler)
+            .subscribe(
+                {
+                    navigator.close()
+                },
+                { error -> Timber.e(error) }
+            ))
     }
 }
